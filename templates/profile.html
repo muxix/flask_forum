@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }}的个人主页{% endblock %}
+{% block main %}
+
+<div id="main">
+    <div id="sidebar">
+        <div class="panel">
+            <div class="header">
+                <span class="col_fade">个人信息</span>
+            </div>
+            <div class="inner">
+                <div class="user_card">
+                    <div>
+                        <a class="user_avatar">
+                            <img src="{{ user.image }}" title="{{ user.username }}">
+                        </a>
+                        <span class="user_name">
+                            <a class="dark">
+                                {{ user.username }}
+                            </a>
+                        </span>
+                        <div class="space clearfix"></div>
+                        <span class="signature">
+                            “{{ user.signature }}”
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="inner">
+                <a href="/topic/new?board_id=-1" class="create_topic_btn">
+                    <span class="span-success">发布话题</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="content">
+        <div class="panel">
+            <div class="header">
+                <ul class="breadcrumb">
+                    <li>
+                        <a>用户</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="inner userinfo">
+                <div class="user_big_avatar">
+                    <img src="{{ user.image }}" class="user_avatar" title="{{ user.username }}">
+                </div>
+                <a class="dark">{{ user.username }}</a>
+                <p class="col_fade">注册时间
+                    <span class="show-time" data-created_time="{{ user.created_time }}"></span>
+                </p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="header">
+                <span class="col_fade">最近创建的话题</span>
+            </div>
+            {% for t in ts_created %}
+            <div class="cell">
+                <a class="user_avatar pull-left">
+                    <img src="{{ user.image }}" title="{{ user.username }}">
+                </a>
+                <span class="reply_count pull-left">
+                    <span class="count_of_replies" title="回复数">
+                        {{ t.reply_count() }}
+                    </span>
+                    <span class="count_seperator">/</span>
+                    <span class="count_of_visits" title="点击数">
+                        {{ t.views }}
+                    </span>
+                </span>
+                <a class="last_time pull-right">
+                    <img class="user_small_avatar" src="{{ user.image }}">
+                    <span class="last_active_time show-time" data-created_time="{{ t.created_time }}"></span>
+                </a>
+                <div class="topic_title_wrapper">
+                    <a class="topic_title" href="{{ url_for('sim_bp_topic.detail', id=t.id) }}">
+                        {{ t.title }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="panel">
+            <div class="header">
+                <span class="col_fade">最近参与的话题</span>
+            </div>
+            {% for t in ts_replied %}
+            <div class="cell">
+                <a class="user_avatar pull-left">
+                    <img src="{{ user.image }}" title="{{ user.username }}">
+                </a>
+                <span class="reply_count pull-left">
+                    <span class="count_of_replies" title="回复数">
+                        {{ t.reply_count() }}
+                    </span>
+                    <span class="count_seperator">/</span>
+                    <span class="count_of_visits" title="点击数">
+                        {{ t.views }}
+                    </span>
+                </span>
+                <a class="last_time pull-right">
+                    <img class="user_small_avatar" src="{{ user.image }}">
+                    <span class="last_active_time show-time" data-created_time="{{ t.created_time }}"></span>
+                </a>
+                <div class="topic_title_wrapper">
+                    <a class="topic_title" href="{{ url_for('sim_bp_topic.detail', id=t.id) }}">
+                        {{ t.title }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    var e = function (sel) {
+        return document.querySelector(sel)
+    }
+
+    var es = function (sel) {
+        return document.querySelectorAll(sel)
+    }
+
+    var timeDisplay = function () {
+        var times = es('.show-time')
+        for (var i = 0; i < times.length; i++) {
+            var t = times[i]
+            var time = Number(t.dataset.created_time)
+            var now = Math.floor(new Date() / 1000)
+            var delta = now - time
+            var s = `${delta} 秒前`
+            t.innerText = s
+        }
+    }
+
+    var Timer = function () {
+        timeDisplay()
+        setInterval(timeDisplay, 1000)
+    }
+
+    var __main = function () {
+        Timer()
+    }
+
+    __main()
+
+</script>
+
+{% endblock %}
